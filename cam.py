@@ -1,8 +1,10 @@
 import cv2
+import time
 import socket
 import struct
 import pickle
 print("importation OK")
+time.sleep(10)
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect(('10.42.237.111', 8485))
 connection = client_socket.makefile('wb')

