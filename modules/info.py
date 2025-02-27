@@ -62,5 +62,5 @@ class Info:
         # Sorties
         Aucunes sortie
         """
-        print(Fore.GREEN, message, Fore.RESET)
+        print(Fore.GREEN+message+Fore.RESET)
         return None

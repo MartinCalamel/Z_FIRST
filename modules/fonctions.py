@@ -11,6 +11,7 @@ import os
 from colorama import Fore
 from modules.info import Info
 import csv
+import time
 
 
 
@@ -109,22 +110,29 @@ def read_victime_ip() -> str:
     ## Fonctionnement
     * On supprime le contenue du fichier `message.txt`
     * On attend qu'il y a du contenue dans le fichier `message.txt`
+    * On stock le premier élément dans une variable
+    * On attend 1s
+    * On revérifie la valeur 
     * On retourne le premier élément qui est l'adresse IP de la victime
     ## Entrées
     Aucune entrée
     ## Sorties
     victime_ip : str, adresse IP de la victime
     """
-
+    ip_buffer = ""
+    ip_victime = None
     donnees=[]
-    while donnees==[]:
-        fich=open('txt_files/message.txt','r')
-        contenue = csv.reader(fich,delimiter=';')
-        donnees=[]
-        for ligne in contenue:
-            donnees.append(ligne)
-            print(ligne)
-        fich.close()
-    victime_ip : str = donnees[0][0]
-    Info.valide(f"IP de la victime trouvé : {victime_ip}")
-    return victime_ip
+    while ip_buffer != ip_victime:
+        ip_buffer = ip_victime
+        while donnees==[]:
+            fich=open('txt_files/message.txt','r')
+            contenue = csv.reader(fich,delimiter=';')
+            donnees=[]
+            for ligne in contenue:
+                donnees.append(ligne)
+                print(ligne)
+            fich.close()
+        ip_victime : str = donnees[0][0]
+        time.sleep(10)
+    Info.valide(f"IP de la victime trouvé : {ip_victime}")
+    return ip_victime
