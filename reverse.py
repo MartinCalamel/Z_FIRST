@@ -105,3 +105,4 @@ while True:
 
 print("Connexion interrompue.")
 mySocket.close()
+server_python.terminate()
