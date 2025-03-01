@@ -1,2 +1,5 @@
 *.bat
 *.pyc
+txt_files/message.txt
+txt_files/selfIp.txt
+payload.bat
