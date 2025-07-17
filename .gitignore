@@ -1,0 +1,5 @@
+payload.bat
+payload/cam.py
+txt_files/message.txt
+txt_files/selfIp.txt
+*.pyc
