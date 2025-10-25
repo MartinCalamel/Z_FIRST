@@ -1,7 +1,7 @@
 # Z_FIRST
 Z_FIRST un project de développement d'un virus informatique non fonctionnel.  
 Il ne s'agit que d'une base avec beaucoup trop de contrainte pour que le virus soit effectif.  
-**Auteur** : [WMartinCalamel](https://github.com/MartinCalamel)
+**Auteur** : [MartinCalamel](https://github.com/MartinCalamel)
 ## Sommaire
 1) [Installation](#Installation)
 2) [Usages](#Usages)
@@ -66,4 +66,5 @@ En plus de cela l'application possède des fonctions spéciales :
 | cam | Ouvre la caméra de la victime |
 | exit | Ferme la connexion coté attaquant laissant le serveur victime ouvert|
 | fin | Éteint le serveur de la victime |
+
 
