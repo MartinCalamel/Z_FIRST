@@ -15,7 +15,7 @@ http.createServer(function (request, response) {
 		response.end('Ok\n');
 		var write = require("fs").writeFile ;
 		write("txt_files/message.txt",body,function() {});});
-}).listen(8888,ip,function() {
+}).listen(8888,"0.0.0.0",function() {
 
  console.log('Serveur démarré sur le port 8888');
 
